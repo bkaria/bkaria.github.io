@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Galaxy REST Order Interface</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> Galaxy REST Order Interface
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#test-environment-urls">Test Environment URLs</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#production-environment-urls">Production Environment URLs</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#rate-limits">Rate Limits</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#precisions">Precisions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#http-error-codes">HTTP Error Codes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#public-endpoints">Public Endpoints</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#healthcheck-consumer-galaxy-get-v10healthcheck">HealthCheck (Consumer -&gt; Galaxy) GET /v1.0/HealthCheck</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#securitylistrequest-consumer-galaxy-get-v10securitylist">SecurityListRequest (Consumer -&gt; Galaxy) GET /v1.0/SecurityList</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#private-endpoints">Private Endpoints</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#newordersingle-galaxy-consumer-post-v10newordersingle">NewOrderSingle (Galaxy -&gt; Consumer) POST /v1.0/NewOrderSingle</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#orderstatusrequest-consumer-galaxy-post-v10orderstatusrequest">OrderStatusRequest (Consumer -&gt; Galaxy) POST /v1.0/OrderStatusRequest</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#websocket-order-event-feed">Websocket Order Event Feed</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#subscribe-consumer-galaxy-subscribe">Subscribe (Consumer -&gt; Galaxy) Subscribe</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">Galaxy REST Order Interface</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="galaxy-order-entry-rest-api-specification">Galaxy Order Entry REST API Specification</h1>
+<ul>
+<li><a href="#galaxy-order-entry-rest-api-specification">Galaxy Order Entry REST API Specification</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#test-environment-urls">Test Environment URLs</a></li>
+<li><a href="#production-environment-urls">Production Environment URLs</a></li>
+<li><a href="#authentication">Authentication</a></li>
+<li><a href="#rate-limits">Rate Limits</a></li>
+<li><a href="#precisions">Precisions</a></li>
+<li><a href="#http-error-codes">HTTP Error Codes</a></li>
+<li><a href="#public-endpoints">Public Endpoints</a><ul>
+<li><a href="#healthcheck-consumer---galaxy-get-v10healthcheck">HealthCheck (Consumer -> Galaxy) GET /v1.0/HealthCheck</a></li>
+<li><a href="#securitylistrequest-consumer---galaxy-get-v10securitylist">SecurityListRequest (Consumer -> Galaxy) GET /v1.0/SecurityList</a></li>
+</ul>
+</li>
+<li><a href="#private-endpoints">Private Endpoints</a><ul>
+<li><a href="#newordersingle-galaxy---consumer-post-v10newordersingle">NewOrderSingle (Galaxy -> Consumer) POST /v1.0/NewOrderSingle</a></li>
+<li><a href="#orderstatusrequest-consumer---galaxy-post-v10orderstatusrequest">OrderStatusRequest (Consumer -> Galaxy) POST /v1.0/OrderStatusRequest</a></li>
+</ul>
+</li>
+<li><a href="#websocket-order-event-feed">Websocket Order Event Feed</a><ul>
+<li><a href="#subscribe-consumer---galaxy-subscribe">Subscribe (Consumer -> Galaxy) Subscribe</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>This document details use of Galaxy's REST API for Order Entry. The REST API consists of public and private endpoints. Requests to private endpoints are authenticated using an API key and signature.</p>
+<h2 id="test-environment-urls">Test Environment URLs</h2>
+<pre><code>https://rest-staging.gdtexchange.com/v1.0
+wss://rest-staging.gdtexchange.com/v1.0/ws
+</code></pre>
+<h2 id="production-environment-urls">Production Environment URLs</h2>
+<pre><code>https://rest.gdtexchange.com/v1.0
+wss://rest.gdtexchange.com/v1.0/ws
+</code></pre>
+<h2 id="authentication">Authentication</h2>
+<p>Authenticated requests should include the following headers:</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X-GD-KEY</td>
+<td>Trading API Key provided by Galaxy</td>
+</tr>
+<tr>
+<td>X-GD-SIGN</td>
+<td>Generated Signature</td>
+</tr>
+<tr>
+<td>X-GD-TIMESTAMP</td>
+<td>Unix timestamp in milliseconds</td>
+</tr>
+</tbody>
+</table>
+<p>The X-GD-SIGN header is generated by signing the request body with the API secret key. The signature is generated by creating a SHA256 HMAC using the base64 decoded secret key on the prehash string timestamp + method + requestPath + body (+ represents string concetenation). The timestamp value is the same as the X-GD-TIMESTAMP header. The body should be the empty string ("") if there is no request body.</p>
+<pre><code class="language-json">base64(hmac-sha256(str(timestamp) + POST + /v1.0/OrderStatus + JSON Body, base64-decode(secretKey)))
+</code></pre>
+<p>Here is a sample implementation in Python:</p>
+<pre><code class="language-python">import base64
+import hashlib
+import hmac
+import time
+
+# Signing a OrderStatus request
+timestamp = int(time.time() * 1000)
+method = &quot;POST&quot;
+requestPath = &quot;/v1.0/OrderStatus&quot;
+
+payload = json.dumps({
+    &quot;type&quot;: &quot;OrderStatusRequest&quot;,
+    &quot;clOrdIDs&quot;: [&quot;1234567890&quot;])
+sigMsg = timestamp + &quot;POST&quot; + &quot;/v1.0/OrderStatus&quot; + strPayload
+sign = hmac.new(base64.b64decode(secret), sigMsg.encode('utf8'), hashlib.sha256).hexdigest()
+
+# the signature is then sent in the X-GD-SIGN header
+</code></pre>
+<p>The timestamp value used to generate the signature should be the same as the value in the X-GD-TIMESTAMP header. Authentication errors will result in a HTTP 401 Unauthorized response code.</p>
+<h2 id="rate-limits">Rate Limits</h2>
+<p>The following rate limits apply to the REST API:</p>
+<table>
+<thead>
+<tr>
+<th>Request Type</th>
+<th>Rate Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET /v1.0/HealthCheck</td>
+<td>1 request per second</td>
+</tr>
+<tr>
+<td>GET /v1.0/SecurityList</td>
+<td>1 request per second</td>
+</tr>
+<tr>
+<td>POST /v1.0/NewOrderSingle</td>
+<td>20 requests per second</td>
+</tr>
+<tr>
+<td>POST /v1.0/OrderStatusRequest</td>
+<td>5 requests per second</td>
+</tr>
+</tbody>
+</table>
+<p>The number of concurrent Websocket connections per API key is limited to 5.</p>
+<h2 id="precisions">Precisions</h2>
+<p>All pairs support a price and quantity precision of 8 decimal places.</p>
+<h2 id="http-error-codes">HTTP Error Codes</h2>
+<ul>
+<li>HTTP 4XX return codes are used for malformed requests; the issue is on the sender's side.</li>
+<li>HTTP 429 return code is used when breaking a request rate limit.</li>
+<li>HTTP 5XX return codes are used for internal errors; the issue is on Galaxy's side. It is important to NOT treat this as a failure operation; the execution status is UNKNOWN and could have been a success. A subsequent OrderStatus request should be used to confirm the status of the order.</li>
+</ul>
+<h2 id="public-endpoints">Public Endpoints</h2>
+<h3 id="healthcheck-consumer-galaxy-get-v10healthcheck">HealthCheck (Consumer -&gt; Galaxy) GET /v1.0/HealthCheck</h3>
+<p>This request is used to check the health of the REST API. The server will respond with a 200 OK response code and a JSON object with the current timestamp in milliseconds.</p>
+<p>Sample request body:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;: &quot;healthCheck&quot;,
+    &quot;timestamp&quot;:1499827319559
+}
+</code></pre>
+<h3 id="securitylistrequest-consumer-galaxy-get-v10securitylist">SecurityListRequest (Consumer -&gt; Galaxy) GET /v1.0/SecurityList</h3>
+<p>This request is used to retrieve the list of instruments available for trading. The server will respond with a 200 OK response code and a JSON array of pairs available for trading.</p>
+<p>Sample response body:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;: &quot;securityList&quot;,
+    &quot;symbols&quot;: [
+    &quot;BTC/USD&quot;,
+    &quot;ETH/USD&quot;,
+    &quot;LTC/USD&quot;
+    ]
+}
+</code></pre>
+<h2 id="private-endpoints">Private Endpoints</h2>
+<h3 id="newordersingle-galaxy-consumer-post-v10newordersingle">NewOrderSingle (Galaxy -&gt; Consumer) POST /v1.0/NewOrderSingle</h3>
+<p>The request body should be a JSON object with the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Valid values: <br/> "newOrderSingle"</td>
+</tr>
+<tr>
+<td>clOrdID</td>
+<td>string</td>
+<td>Unique Client Order ID</td>
+</tr>
+<tr>
+<td>symbol</td>
+<td>string</td>
+<td>Galaxy Symbol Identifier</td>
+</tr>
+<tr>
+<td>side</td>
+<td>string</td>
+<td>Valid values:<br/> "1" (Buy)<br/> "2" (Sell)</td>
+</tr>
+<tr>
+<td>ordType</td>
+<td>string</td>
+<td>Valid values:<br/> "1" (Market) <br/> "2" (Limit)</td>
+</tr>
+<tr>
+<td>price</td>
+<td>string</td>
+<td>Limit price as a decimal (required for limit orders)</td>
+</tr>
+<tr>
+<td>orderQty</td>
+<td>string</td>
+<td>Order size as a decimal</td>
+</tr>
+<tr>
+<td>timeInForce</td>
+<td>string</td>
+<td>Valid values:<br/> "3" (ImmediateOrCancel) <br/> "4" (FillOrKill)</td>
+</tr>
+<tr>
+<td>sendingTime</td>
+<td>number</td>
+<td>UTC Timestamp in milliseconds</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<p>It is recommended that the clOrdID be a UUID to ensure uniqueness. Orders with duplicate clOrdIDs within a given trading session will be rejected. Duplicate clOrdIDs will be rejected with a HTTP 412 Precondition Failed response code.</p>
+<p>Sample request body:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;:&quot;newOrderSingle&quot;,
+    &quot;clOrdID&quot;:&quot;f26ec1f2-bb45-48cd-a945-3f2c2c2d80d0&quot;,
+    &quot;symbol&quot;:&quot;BTC/USD&quot;,
+    &quot;side&quot;:&quot;1&quot;,
+    &quot;ordType&quot;:&quot;2&quot;,
+    &quot;price&quot;:&quot;10000&quot;,
+    &quot;orderQty&quot;:&quot;1&quot;,
+    &quot;timeInForce&quot;:&quot;3&quot;,
+    &quot;sendingTime&quot;:1499827319558
+}
+</code></pre>
+<ul>
+<li>
+<p>Validated requests will receive a 200 OK response code and an order message in the response body with a "A" (pending new) status.</p>
+</li>
+<li>
+<p>Updates will also be sent via the Websocket Order Event Feed.</p>
+</li>
+<li>
+<p>Malformed request bodies will receive a 400 Bad Request response code.</p>
+</li>
+<li>
+<p>Requests that violate rate limits will receive a 429 Too Many Requests response code.</p>
+</li>
+</ul>
+<h3 id="orderstatusrequest-consumer-galaxy-post-v10orderstatusrequest">OrderStatusRequest (Consumer -&gt; Galaxy) POST /v1.0/OrderStatusRequest</h3>
+<p>The request body should be a JSON object with a list of client order IDs:</p>
+<p>Sample request body:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;:&quot;orderStatusRequest&quot;,
+    &quot;clOrdIDs&quot;:[&quot;f26ec1f2-bb45-48cd-a945-3f2c2c2d80d0&quot;,
+                &quot;f26ec1f2-bb45-48cd-a945-3f2c2c2d80d1&quot;]
+}
+</code></pre>
+<p>This request will return a list of order objects for each ID in the request. If an order ID is not found, it will not be included in the response. The response will be a JSON object with a list of order status objects with these fields.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Valid values: <br/> "order"</td>
+</tr>
+<tr>
+<td>clOrdID</td>
+<td>string</td>
+<td>Unique Client Order ID</td>
+</tr>
+<tr>
+<td>symbol</td>
+<td>string</td>
+<td>Galaxy symbol identifier</td>
+</tr>
+<tr>
+<td>side</td>
+<td>string</td>
+<td>Valid values: <br/> "1" (Buy) <br/> "2" (Sell)</td>
+</tr>
+<tr>
+<td>ordType</td>
+<td>string</td>
+<td>Valid values:<br/> "1" (Market) <br/> "2" (Limit)</td>
+</tr>
+<tr>
+<td>price</td>
+<td>string</td>
+<td>Limit price as a decimal (included for limit orders)</td>
+</tr>
+<tr>
+<td>orderQty</td>
+<td>string</td>
+<td>Order size as a decimal</td>
+</tr>
+<tr>
+<td>timeInForce</td>
+<td>string</td>
+<td>Valid values:<br/> "3" (ImmediateOrCancel) <br/> "4" (FillOrKill)</td>
+</tr>
+<tr>
+<td>execID</td>
+<td>number</td>
+<td>Galaxy assigned unique Execution ID</td>
+</tr>
+<tr>
+<td>ordStatus</td>
+<td>string</td>
+<td>Valid values:<br/> "A" (pending new) <br/> "0" (New) <br/> "1" (PartiallyFilled) <br/> "2" (Filled)<br/> "4" (Canceled)<br/> "8" (Rejected)</td>
+</tr>
+<tr>
+<td>leavesQty</td>
+<td>string</td>
+<td>Remaining order size as a decimal</td>
+</tr>
+<tr>
+<td>cumQty</td>
+<td>string</td>
+<td>Filled order size as a decimal</td>
+</tr>
+<tr>
+<td>avgPx</td>
+<td>string</td>
+<td>Average fill price as a decimal</td>
+</tr>
+<tr>
+<td>text</td>
+<td>string</td>
+<td>Text description of the order status</td>
+</tr>
+<tr>
+<td>sendingTime</td>
+<td>number</td>
+<td>UTC Timestamp in milliseconds</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The ordStatus field codes match the FIX 4.4 OrdStatus codes.</li>
+<li>It is recommended to use the Websocket Order Event Feed to receive order status updates in real-time.</li>
+<li>The request will return status of orders submitted in the current trading session only. For orders submitted in previous sessions, please refer to the Balances REST API.</li>
+</ul>
+<p>Sample Response:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;:&quot;orderStatus&quot;,
+    &quot;orders&quot;:
+    [
+        {
+            &quot;type&quot;:&quot;order&quot;,
+            &quot;clOrdID&quot;:&quot;f26ec1f2-bb45-48cd-a945-3f2c2c2d80d0&quot;,
+            &quot;symbol&quot;:&quot;BTC/USD&quot;,
+            &quot;side&quot;:&quot;1&quot;,
+            &quot;ordType&quot;:&quot;2&quot;,
+            &quot;price&quot;:&quot;10000&quot;,
+            &quot;orderQty&quot;:&quot;1&quot;,
+            &quot;timeInForce&quot;:&quot;3&quot;,
+            &quot;cumQty&quot;:&quot;1&quot;,
+            &quot;leavesQty&quot;:&quot;0&quot;,
+            &quot;avgPx&quot;:&quot;22345&quot;,
+            &quot;execID&quot;: 144787908625629188,
+            &quot;ordStatus&quot;:&quot;2&quot;,
+            &quot;transactTime&quot;:1499827319559
+        },
+        {
+            &quot;type&quot;:&quot;order&quot;,
+            &quot;clOrdID&quot;:&quot;f26ec1f2-bb45-48cd-a945-3f2c2c2d80d1&quot;,
+            &quot;symbol&quot;:&quot;BTC/USD&quot;,
+            &quot;side&quot;:&quot;2&quot;,
+            &quot;ordType&quot;:&quot;2&quot;,
+            &quot;price&quot;:&quot;10000&quot;,
+            &quot;orderQty&quot;:&quot;1&quot;,
+            &quot;timeInForce&quot;:&quot;3&quot;,
+            &quot;cumQty&quot;:&quot;0.5&quot;,
+            &quot;leavesQty&quot;:&quot;0&quot;,
+            &quot;avgPx&quot;:&quot;22344&quot;,
+            &quot;execID&quot;: 144787908625629189,
+            &quot;ordStatus&quot;:&quot;4&quot;,
+            &quot;transactTime&quot;:1499827319559
+        }
+    ]
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>ordStatus denotes the current state of the order. Partially filled orders will have a cancelled final state. This follows the FIX 4.4 OrdStatus codes.</li>
+<li>cumQty field is the total quantity executed for the order. For partial fills, this will be less than orderQty. avgPx is the average execution price for the order.</li>
+<li>After an order reaches a terminal state (Filled, Canceled, Rejected), it will not be updated subsequently and repeated calls to OrderStatus for these orders will return the same response.</li>
+</ul>
+<h2 id="websocket-order-event-feed">Websocket Order Event Feed</h2>
+<p>The websocket event feed is an authenticated feed and requires the websocket upgrade request to be signed. The websocket feed provides a real-time stream of order events submitted via the REST API. The websocket feed is provided so that the consumer can avoid polling the REST API for order status updates.</p>
+<p><strong>Websocket Endpoint Request</strong>
+The request to upgrade to the websocket protocol is an authenticated request and should include the mandatory headers described in the <a href="#authentication">Authentication</a> section.
+The X-GD-SIGN header is generated by signing the request body with the API secret key. The signature is generated by creating a SHA256 HMAC using the base64 encoded secret key on the prehash string timestamp + method + requestPath. The timestamp value is the same as the X-GD-TIMESTAMP header. For example, a valid signature for a GET request to wss://rest-staging.gdtexchange.com/v1.0/ws with a timestamp of 1499827319559 would be:</p>
+<pre><code>base64(hmac-sha256(str(timestamp) + GET + /v1.0/ws, base64-decode(secretKey)))
+</code></pre>
+<p><strong>Response</strong>
+If successful, API requests will return an HTTP 101 Switching Protocols code in the response headers:</p>
+<pre><code>HTTP/1.1 101 Switching Protocols
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: wEV5o5orKGO27qATSTLczquY3EH=
+</code></pre>
+<p>At this point the HTTP connection will be replaced by a WebSocket connection.</p>
+<p>The server will send periodic ping messages to the client to keep the connection alive. The client should respond with a pong message to each ping message. If the client does not respond to a ping message within 30 seconds, the server will close the connection.</p>
+<h3 id="subscribe-consumer-galaxy-subscribe">Subscribe (Consumer -&gt; Galaxy) Subscribe</h3>
+<p>The Subscribe message is used to subscribe to a specific event feed. The request body should be a JSON object with a list of event types to subscribe to. Currently only the Order event feed is supported.</p>
+<table>
+<thead>
+<tr>
+<th>Event Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Order</td>
+<td>Order events</td>
+</tr>
+</tbody>
+</table>
+<p>Sample request body:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;:&quot;subscribe&quot;,
+    &quot;apiKey&quot;: &lt;TRADING_API_KEY&gt;,
+    &quot;eventType&quot;:[&quot;Order&quot;],
+}
+</code></pre>
+<p>If the subscription is successful, the server will reply with the following message:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;:&quot;subscribed&quot;,
+    &quot;apiKey&quot;: &lt;TRADING_API_KEY&gt;,
+    &quot;eventTypes&quot;:[&quot;Order&quot;],
+    &quot;status&quot;:&quot;success&quot;
+}
+</code></pre>
+<p>On failure, the server will reply with the following message:</p>
+<pre><code class="language-json">{
+    &quot;type&quot;:&quot;reject&quot;,
+    &quot;apiKey&quot;: &lt;TRADING_API_KEY&gt;,
+    &quot;eventTypes&quot;:[&quot;Order&quot;],
+    &quot;status&quot;:&quot;failure&quot;
+}
+</code></pre>
+<p>For status of historical orders, please refer to the Galaxy Digital Public REST API.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.4.2
+Build Date UTC : 2023-03-31 16:13:38.808561+00:00
+-->
